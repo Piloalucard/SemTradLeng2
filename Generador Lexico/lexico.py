@@ -49,7 +49,7 @@ class Lexico:
 
     def __tipoSimb(self,tipo):
         simbologia=["Ident.","Entero","Real","Cadena","Tipo",
-        "Op.Suma","Op.Mul","Op.Relac.","Op.Or","Op.And","Op.Not","Op.Igual"]
+        "Op.Suma","Op.Mul","Op.Rel.","Op.Or","Op.And","Op.Not","Op.Igual"]
         cadena=simbologia[tipo]
         return  cadena
     
@@ -104,49 +104,64 @@ class Lexico:
 
                 
                 self._simb=i
+                band2=False
 
-                if i == "+" or i =="-":
-                    newValor = Valor(self._simb,self.__tipoSimb(5),5,"+,-")
-                    band=True
-                elif i == "*" or i =="/":
-                    newValor = Valor(self._simb,self.__tipoSimb(6),6,"*,/")
-                    band=True
-                elif i=="<" or i ==">":
-                    newValor = Valor(self._simb,self.__tipoSimb(7),7,"<,<=,>=,>")
-                    band=True
-                elif i=="!":
-                    newValor = Valor(self._simb,self.__tipoSimb(10),10,"!")
-                    band=True
-                elif i == ";":
-                    newValor = Valor(self._simb,self._simb,12,"")
-                    band=True
-                elif i == ",":
-                    newValor = Valor(self._simb,self._simb,13,"")
-                    band=True
-                elif i == "(":
-                    newValor = Valor(self._simb,self._simb,14,"")
-                    band=True
-                elif i == ")":
-                    newValor = Valor(self._simb,self._simb,15,"")
-                    band=True
-                elif i == "{":
-                    newValor = Valor(self._simb,self._simb,16,"")
-                    band=True
-                elif i == "}":
-                    newValor = Valor(self._simb,self._simb,17,"")
-                    band=True
-                elif i == "=":
-                    newValor = Valor(self._simb,self._simb,18,"")
-                    band=True
-                elif i == "$":
-                    newValor = Valor(self._simb,self._simb,23,"")
-                    band=True
+                if band==False:
+                    if i == "+" or i =="-":
+                        newValor = Valor(self._simb,self.__tipoSimb(5),5,"+,-")
+                        band=True
+                    elif i == "*" or i =="/":
+                        newValor = Valor(self._simb,self.__tipoSimb(6),6,"*,/")
+                        band=True
+                    elif i=="<" or i ==">":
+                        newValor = Valor(self._simb,self.__tipoSimb(7),7,"<,<=,>=,>")
+                        band=True
+                        band2=True
+                    elif i=="!":
+                        newValor = Valor(self._simb,self.__tipoSimb(10),10,"!")
+                        band=True
+                        band2=True
+                    elif i == ";":
+                        newValor = Valor(self._simb,self._simb,12,"")
+                        band=True
+                    elif i == ",":
+                        newValor = Valor(self._simb,self._simb,13,"")
+                        band=True
+                    elif i == "(":
+                        newValor = Valor(self._simb,self._simb,14,"")
+                        band=True
+                    elif i == ")":
+                        newValor = Valor(self._simb,self._simb,15,"")
+                        band=True
+                    elif i == "{":
+                        newValor = Valor(self._simb,self._simb,16,"")
+                        band=True
+                    elif i == "}":
+                        newValor = Valor(self._simb,self._simb,17,"")
+                        band=True
+                    elif i == "=":
+                        newValor = Valor(self._simb,self._simb,18,"")
+                        band=True
+                        band2=True
+                    elif i == "$":
+                        newValor = Valor(self._simb,self._simb,23,"")
+                        band=True
 
-                if band:
+                    
+
+                if band2 and self._fuente[self._ind+1]=="=":
+                    self._simb+=self._fuente[self._ind+1]
+                    pass
+                elif band:
                     self._lista.append(newValor)
                     del newValor
+                    self.__resetSimb()
+                else:
+                    self.__resetSimb()
 
-                self.__resetSimb()
+               
+
+                
             self._ind+=1
 
         
