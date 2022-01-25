@@ -34,10 +34,11 @@ class Lexico:
 
     def __init__(self,f):
         self._fuente=f+"$"
+        self._ind=0
 
     def setFuente(self,f):
         self._ind=0
-        self._fuente=f
+        self._fuente=f+"$"
 
     def obtLexico(self):
         auxcad="Nombre\tSimbolo\tTipo\tExtra\n"
@@ -47,7 +48,8 @@ class Lexico:
         return auxcad
 
     def __tipoSimb(self,tipo):
-        simbologia=["Ident.","Entero","Real"]
+        simbologia=["Ident.","Entero","Real","Cadena","Tipo",
+        "Op.Suma","Op.Mul","Op.Relac.","Op.Or","Op.And","Op.Not","Op.Igual"]
         cadena=simbologia[tipo]
         return  cadena
     
@@ -56,15 +58,96 @@ class Lexico:
             if self.__verLetra(i) or self.__verNum(i) or ord(i)==46:
                 self._simb+=i
             else:
-                self.__obtIdentif()
+                msc=self._simb
+                newValor=Valor("Error","Error",-1,"")
+                band = False
+                if msc=="int" or msc=="float" or msc=="void" or msc=="double" or msc=="string" or msc=="char":
+                    newValor = Valor(self._simb,self.__tipoSimb(4),4," int,float,void")
+                    band=True
+                elif msc=="if":
+                    newValor = Valor(self._simb,self._simb,19,"")
+                    band=True
+                elif msc=="while":
+                    newValor = Valor(self._simb,self._simb,20,"")
+                    band=True
+                elif msc=="return":
+                    newValor = Valor(self._simb,self._simb,21,"")
+                    band=True
+                elif msc=="else":
+                    newValor = Valor(self._simb,self._simb,22,"")
+                    band=True
+                elif msc=="<=" or msc ==">=":
+                    newValor = Valor(self._simb,self.__tipoSimb(7),7,"<,<=,>=,>")
+                    band=True
+                elif msc=="||":
+                    newValor = Valor(self._simb,self.__tipoSimb(8),8,"||")
+                    band=True
+                elif msc=="&&":
+                    newValor = Valor(self._simb,self.__tipoSimb(9),9,"&&")
+                    band=True
+                elif msc=="==" or msc =="!=":
+                    newValor = Valor(self._simb,self.__tipoSimb(11),11,"==,!=")
+                    band=True
+                else:
+                    try:
+                        valorAux=self._lista[-1]
+                        ant=valorAux.getCadena()
+                        if ant=="string":
+                            newValor = Valor(self._simb,self.__tipoSimb(3),3,"")
+                            band=True
+                        elif len(self._simb) > 1:
+                            self.__obtIdentif()
+                    except:
+                        if len(self._simb) > 1:
+                            self.__obtIdentif()
+                
+
                 
                 self._simb=i
-                if i == "$":
+
+                if i == "+" or i =="-":
+                    newValor = Valor(self._simb,self.__tipoSimb(5),5,"+,-")
+                    band=True
+                elif i == "*" or i =="/":
+                    newValor = Valor(self._simb,self.__tipoSimb(6),6,"*,/")
+                    band=True
+                elif i=="<" or i ==">":
+                    newValor = Valor(self._simb,self.__tipoSimb(7),7,"<,<=,>=,>")
+                    band=True
+                elif i=="!":
+                    newValor = Valor(self._simb,self.__tipoSimb(10),10,"!")
+                    band=True
+                elif i == ";":
+                    newValor = Valor(self._simb,self._simb,12,"")
+                    band=True
+                elif i == ",":
+                    newValor = Valor(self._simb,self._simb,13,"")
+                    band=True
+                elif i == "(":
+                    newValor = Valor(self._simb,self._simb,14,"")
+                    band=True
+                elif i == ")":
+                    newValor = Valor(self._simb,self._simb,15,"")
+                    band=True
+                elif i == "{":
+                    newValor = Valor(self._simb,self._simb,16,"")
+                    band=True
+                elif i == "}":
+                    newValor = Valor(self._simb,self._simb,17,"")
+                    band=True
+                elif i == "=":
+                    newValor = Valor(self._simb,self._simb,18,"")
+                    band=True
+                elif i == "$":
                     newValor = Valor(self._simb,self._simb,23,"")
+                    band=True
+
+                if band:
                     self._lista.append(newValor)
                     del newValor
 
                 self.__resetSimb()
+            self._ind+=1
 
         
 

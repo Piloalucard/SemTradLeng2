@@ -13,7 +13,7 @@ def main():
         print("")
         print("  /A N A L I Z A D O R   L E X I C O/")
         print("")
-        lex = Lexico("awa12 30230 3.11416")
+        lex = Lexico("if string agua123+pc*+/>")
         lex.leerSimb()
         print(lex.obtLexico())
 
