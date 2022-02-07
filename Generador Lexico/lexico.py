@@ -1,30 +1,5 @@
-class Valor:
-    cadena=""
-    simbolo=""
-    tipo=-1
-    extra=""
-
-    def __init__(self,c,s,t,e):
-        self.cadena=c
-        self.simbolo=s
-        self.tipo=t
-        self.extra=e
-    
-    def toString(self):
-        aux=self.cadena+"\t"+self.simbolo+"\t"+str(self.tipo)+"\t"+self.extra
-        return aux
-    
-    def getCadena(self):
-        return self.cadena
-    
-    def getSimbolo(self):
-        return self.simbolo
-    
-    def getTipo(self):
-        return self.tipo
-    
-    def getExtra(self):
-        return self.extra
+import imp
+from valor import Valor
 
 class Lexico:
     _fuente = ""
@@ -35,6 +10,10 @@ class Lexico:
     def __init__(self,f):
         self._fuente=f+"$"
         self._ind=0
+
+    def getLista(self):
+        return self._lista
+
 
     def setFuente(self,f):
         self._ind=0
@@ -92,17 +71,24 @@ class Lexico:
                     try:
                         valorAux=self._lista[-1]
                         ant=valorAux.getCadena()
-                        if ant=="string":
+                        if ant=="string" and self._evitarEsp(self._simb):
                             newValor = Valor(self._simb,self.__tipoSimb(3),3,"")
                             band=True
                         elif len(self._simb) > 1:
                             self.__obtIdentif()
+                        elif self._evitarEsp(self._simb):
+                            self.__obtIdentif()
                     except:
                         if len(self._simb) > 1:
                             self.__obtIdentif()
+                        elif self._evitarEsp(self._simb):
+                            self.__obtIdentif()
                 
+                if newValor.getTipo() != -1:
+                    self._lista.append(newValor)
+                    band=False
+               
 
-                
                 self._simb=i
                 band2=False
 
@@ -165,7 +151,13 @@ class Lexico:
             self._ind+=1
 
         
-
+    def _evitarEsp(self,i):  
+        try: 
+            if self.__verLetra(i) or self.__verNum(i) or ord(i)==46:
+                return True
+        except:
+            pass
+        return False
                 
 
     def __obtIdentif(self):

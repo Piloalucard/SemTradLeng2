@@ -1,4 +1,5 @@
 from lexico import  Lexico
+from sintactico import Sintactico
 import os
 
 def clear():
@@ -13,9 +14,12 @@ def main():
         print("")
         print("  /A N A L I Z A D O R   L E X I C O/")
         print("")
-        lex = Lexico("if string agua123+pc*+/ <=")
+        lex = Lexico("string a>;")
         lex.leerSimb()
-        print(lex.obtLexico())
+        sint = Sintactico(lex.getLista())
+        sint.analisis()
+        sint.impLineas()
+        
 
         
         print("")
